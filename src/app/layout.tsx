@@ -2,13 +2,13 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Grace Hub · Bienvenida',
+  title: 'PDE Avivamiento',
   description: 'Registro de visitantes para el equipo de bienvenida',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Bienvenida',
+    title: 'PDE Avivamiento',
   },
 };
 

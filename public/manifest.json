@@ -1,6 +1,6 @@
 {
-  "name": "Grace Hub Bienvenida",
-  "short_name": "Bienvenida",
+  "name": "PDE Avivamiento",
+  "short_name": "PDE Avivamiento",
   "description": "Registro de visitantes para el equipo de bienvenida",
   "start_url": "/",
   "display": "standalone",
