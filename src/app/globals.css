@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 69% 94%;
+    --foreground: 205 100% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 205 100% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 205 100% 10%;
+    --primary: 207 89% 68%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 207 100% 96%;
+    --secondary-foreground: 205 100% 10%;
+    --muted: 207 100% 96%;
+    --muted-foreground: 210 10% 28%;
+    --accent: 207 100% 96%;
+    --accent-foreground: 205 100% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 207 60% 92%;
+    --input: 207 100% 96%;
+    --ring: 207 89% 68%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Prevent overscroll bounce on mobile */
+  html,
+  body {
+    overscroll-behavior: none;
+  }
+
+  /* Improve tap target sizes on mobile */
+  button,
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
+}
