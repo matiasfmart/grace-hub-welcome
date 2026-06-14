@@ -3,11 +3,12 @@ const API = process.env.NEXT_PUBLIC_API_URL;
 export interface CreateVisitorPayload {
   firstName: string;
   lastName: string;
-  visitDate: string; // YYYY-MM-DD — generated automatically, never input by user
+  visitDate: string; // ISO 8601 datetime — generated automatically via nowISO()
   contact?: string;
   notes?: string;
   source: 'pwa';
   addedBy: number;  // member_id — required by business rule RN-PWA-1
+  meetingSeriesId?: number;
 }
 
 /**

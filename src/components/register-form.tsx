@@ -2,20 +2,18 @@
 
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { createProspect } from '@/lib/api/prospects';
+import { getMeetingSeries } from '@/lib/api/meeting-series';
+import { local } from '@/lib/storage';
 import { useMembers } from '@/hooks/use-members';
-import type { Member, Visitor } from '@/lib/types';
+import type { Member, MeetingSeries, Visitor } from '@/lib/types';
 
 interface RegisterFormProps {
   token: string;
   onVisitorRegistered: (visitor: Visitor) => void;
 }
 
-function todayISO(): string {
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth() + 1).padStart(2, '0');
-  const d = String(now.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
+function nowISO(): string {
+  return new Date().toISOString();
 }
 
 export default function RegisterForm({
@@ -37,6 +35,33 @@ export default function RegisterForm({
   const [addedByName, setAddedByName] = useState<string>('');
   const [showMemberDropdown, setShowMemberDropdown] = useState(false);
   const [memberSearch, setMemberSearch] = useState('');
+
+  // Meeting series — NOT cleared after submit, persisted in localStorage
+  const [meetingSeriesId, setMeetingSeriesId] = useState<number | null>(null);
+  const [meetingSeriesName, setMeetingSeriesName] = useState<string>('');
+  const [allSeries, setAllSeries] = useState<MeetingSeries[]>([]);
+
+  // Restore series from localStorage on mount
+  useEffect(() => {
+    const savedId = local.getMeetingSeriesId();
+    const savedName = local.getMeetingSeriesName();
+    if (savedId) setMeetingSeriesId(savedId);
+    if (savedName) setMeetingSeriesName(savedName);
+  }, []);
+
+  // Load series list from backend
+  useEffect(() => {
+    getMeetingSeries(token).then(setAllSeries).catch(() => {});
+  }, [token]);
+
+  const handleSeriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value ? Number(e.target.value) : null;
+    const name = e.target.options[e.target.selectedIndex].text;
+    setMeetingSeriesId(id);
+    setMeetingSeriesName(id ? name : '');
+    if (id) local.setMeetingSeries(id, name);
+    else local.clearMeetingSeries();
+  };
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -78,9 +103,10 @@ export default function RegisterForm({
           lastName: lastName.trim(),
           contact: contact.trim() || undefined,
           notes: notes.trim() || undefined,
-          visitDate: todayISO(),
+          visitDate: nowISO(),
           source: 'pwa',
           addedBy,
+          meetingSeriesId: meetingSeriesId ?? undefined,
         });
 
         const visitor: Visitor = {
@@ -91,6 +117,8 @@ export default function RegisterForm({
           notes: notes.trim() || undefined,
           registeredAt: new Date().toISOString(),
           addedByName,
+          meetingSeriesId: meetingSeriesId ?? undefined,
+          meetingSeriesName: meetingSeriesName || undefined,
         };
 
         onVisitorRegistered(visitor);
@@ -234,6 +262,28 @@ export default function RegisterForm({
           <p className="text-xs text-destructive">{errors.addedBy}</p>
         )}
       </div>
+
+      {/* Meeting series */}
+      {allSeries.length > 0 && (
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="meetingSeries" className="text-sm font-medium text-muted-foreground">
+            Reunión
+          </label>
+          <select
+            id="meetingSeries"
+            value={meetingSeriesId ?? ''}
+            onChange={handleSeriesChange}
+            className="h-11 rounded-lg border border-input bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+          >
+            <option value="">Sin especificar</option>
+            {allSeries.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Submit error */}
       {errors.submit && (

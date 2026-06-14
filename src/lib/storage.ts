@@ -4,6 +4,8 @@ const KEYS = {
   TOKEN_EXP: 'ghw_token_exp',
   MEMBER_ID: 'ghw_member_id',
   MEMBER_NAME: 'ghw_member_name',
+  MEETING_SERIES_ID: 'ghw_meeting_series_id',
+  MEETING_SERIES_NAME: 'ghw_meeting_series_name',
 } as const;
 
 // Token TTL: 8 hours (covers a full service shift)
@@ -52,5 +54,20 @@ export const local = {
   },
   getMemberName: (): string | null => {
     return localStorage.getItem(KEYS.MEMBER_NAME);
+  },
+  setMeetingSeries: (id: number, name: string): void => {
+    localStorage.setItem(KEYS.MEETING_SERIES_ID, String(id));
+    localStorage.setItem(KEYS.MEETING_SERIES_NAME, name);
+  },
+  getMeetingSeriesId: (): number | null => {
+    const val = localStorage.getItem(KEYS.MEETING_SERIES_ID);
+    return val ? Number(val) : null;
+  },
+  getMeetingSeriesName: (): string | null => {
+    return localStorage.getItem(KEYS.MEETING_SERIES_NAME);
+  },
+  clearMeetingSeries: (): void => {
+    localStorage.removeItem(KEYS.MEETING_SERIES_ID);
+    localStorage.removeItem(KEYS.MEETING_SERIES_NAME);
   },
 };

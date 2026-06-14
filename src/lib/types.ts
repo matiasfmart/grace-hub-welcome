@@ -5,6 +5,12 @@ export interface Member {
   fullName: string;
 }
 
+export interface MeetingSeries {
+  id: number;
+  name: string;
+  defaultTime?: string;
+}
+
 export interface Visitor {
   id: number;           // prospectId devuelto por el backend
   firstName: string;
@@ -13,6 +19,8 @@ export interface Visitor {
   notes?: string;
   registeredAt: string; // ISO string del momento del registro local
   addedByName: string;  // nombre del miembro que lo registró
+  meetingSeriesId?: number;
+  meetingSeriesName?: string;
 }
 
 export interface AuthState {
